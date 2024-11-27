@@ -1,0 +1,7 @@
+0.0.0 -
+### major.minor.patch.file_md5 ###
+### The file_md5 number is 15 digits md5sum results###
+### The patch number is incremented for minor changes and bug fixes which do not change the API. ###
+### The minor version is incremented for releases which add new, but backward-compatible, API features. ###
+### The major version is incremented for API changes which are not backward-compatible. ###
+

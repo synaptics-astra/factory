@@ -1,0 +1,130 @@
+#!/usr/bin/env python3
+
+""" %prog [options]
+"""
+
+""" Check version """
+import sys
+sys.dont_write_bytecode = True
+
+if sys.hexversion < 0x03040000:
+  raise Exception("ERROR: Python 3.4 or newer is required")
+
+""" Import modules """
+import os
+import argparse
+import subprocess
+import configparser
+
+#
+# Functions
+#
+
+def exec_cmd(args):
+  print("+ execute command: ", " ".join(args))
+
+  p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=dict(os.environ))
+  (stdout, stderr) = p.communicate()
+  """ print(stdout.decode()) """
+  print(stderr.decode())
+  assert p.returncode == 0
+
+#
+# Classes
+#
+
+class GenXSecureImage:
+  def __init__(self):
+    self.opts = argparse.Namespace()
+    self.opts.basedir_security = os.path.realpath(os.path.dirname(sys.argv[0]) + "/../..")
+
+  def parse_args(self):
+    """ parse command line arguments """
+    parser = argparse.ArgumentParser(description="Generate GenX Secure Image")
+
+    parser.add_argument('--img_type', nargs=1)
+    parser.add_argument('--seg_id', nargs=1, default=["0x00000000"])
+    parser.add_argument('--seg_id_mask', nargs=1, default=["0xFFFFFFFF"])
+    parser.add_argument('--version', nargs=1, default=["0x00000001"])
+    parser.add_argument('--version_mask', nargs=1, default=["0xFFFFFFFF"])
+    parser.add_argument('--extras', nargs=1)
+    parser.add_argument('--length', nargs=1)
+    parser.add_argument('--in_payload', nargs=1)
+    parser.add_argument('--out_store', nargs=1)
+    parser.add_argument('--workdir-security-tools', nargs=1)
+    parser.add_argument('--workdir-security-keys', nargs=1)
+
+    self.opts = parser.parse_args(args=sys.argv[1:], namespace=self.opts)
+
+    assert(self.opts.img_type is not None)
+    assert(self.opts.extras is not None)
+    assert(self.opts.length is not None)
+    assert(self.opts.in_payload is not None)
+    assert(self.opts.out_store is not None)
+    assert(self.opts.workdir_security_tools is not None)
+    assert(self.opts.workdir_security_keys is not None)
+
+  def sign_image(self):
+    """ assign AES and RSA """
+    print(self.opts)
+
+    aes_list = {'BOOT_LOADER': 'AESK0_BOOT_LOADER.bin',
+                'ATF': 'AESK0_ATF.bin',
+                'TZ_KERNEL': 'AESK0_TZ_KERNEL.bin',
+                'TZK_BOOT_PARAMETER': 'AESK0_TZK_BOOT_PARAMETER.bin',
+                'LINUX_KERNEL': 'AESK0_LINUX.bin',
+                'SM_FW': 'AESK0_SM_FW.bin'}
+
+    rsa_list = {'BOOT_LOADER': 'K1_REE_A.rsa.priv.pem',
+                'FASTLOGO': 'K1_REE_A.rsa.priv.pem',
+                'ATF': 'K1_REE_A.rsa.priv.pem',
+                'TZ_KERNEL': 'K1_REE_A.rsa.priv.pem',
+                'TZK_BOOT_PARAMETER': 'K1_REE_A.rsa.priv.pem',
+                'LINUX_KERNEL': 'K1_REE_C.rsa.priv.pem',
+                'SM_FW': 'K1_REE_B.rsa.priv.pem'}
+
+    if aes_list.get(self.opts.img_type[0]) is not None:
+        aes_key = self.opts.workdir_security_keys[0] + "/" + aes_list.get(self.opts.img_type[0])
+#        aes_key = tool_full_path = os.path.join(self.opts.workdir_security_keys, '/' + aes_list.get(self.opts.img_type[0]))
+
+    signing_key = self.opts.workdir_security_keys[0] + "/" + rsa_list.get(self.opts.img_type[0])
+#    signing_key = os.path.join(self.opts.workdir_security_keys, '/' + aes_list.get(self.opts.img_type[0]))
+
+    """ Command and arguments """
+    cmd2run = [ self.opts.workdir_security_tools[0] + "/genx_img" ]
+    cmd2run.extend(["-t", self.opts.img_type[0]])
+    if aes_list.get(self.opts.img_type[0]) is not None:
+      cmd2run.extend(["-k", aes_key])
+    else:
+      cmd2run.extend(["--noenc"])
+
+    cmd2run.extend(["-n", signing_key])
+    cmd2run.extend(["-s", self.opts.seg_id[0]])
+    cmd2run.extend(["-S", self.opts.seg_id_mask[0]])
+    cmd2run.extend(["-r", self.opts.version[0]])
+    cmd2run.extend(["-R", self.opts.version_mask[0]])
+    cmd2run.extend(["-x", self.opts.extras[0]])
+    cmd2run.extend(["-l", self.opts.length[0]])
+    cmd2run.extend(["-i", self.opts.in_payload[0]])
+    cmd2run.extend(["-o", self.opts.out_store[0]])
+
+    exec_cmd(cmd2run)
+
+#
+# Main
+#
+
+def main():
+  genXSecImg = GenXSecureImage()
+  genXSecImg.parse_args()
+
+  """
+  print("\n")
+  print(genXSecImg.opts)
+  """
+
+  genXSecImg.sign_image()
+
+if __name__ == "__main__":
+  exitcode = main()
+  sys.exit(exitcode)
