@@ -1,0 +1,40 @@
+### Image Name ###
+Imgs=(K0_REE BOOT_LOADER TZ_KERNEL ATF TZK_BOOT_PARAMETER LINUX SM_FW)
+
+### Image Type Value ###
+### RSA keys ###
+IMAGE_TYPE_TZ_KERNEL=0x00000016
+IMAGE_TYPE_ATF=0x00000017
+IMAGE_TYPE_TZK_BOOT_PARAMETER=0x00000018
+IMAGE_TYPE_K0_REE=0x00000003
+IMAGE_TYPE_BOOT_LOADER=0x00000020
+IMAGE_TYPE_LINUX=0x00000021
+IMAGE_TYPE_SM_FW=0x00000034
+
+### 2 bytes Level i ###
+LEVEL=0x0001
+
+### 4 bytes Header Version ###
+HEADER_VERSION_K0_REE=0x00000000
+
+### 4 bytes Header Version ###
+HEADER_VERSION=0x00000001
+
+### Development Image Flag ###
+PROD_IMAGE_FLAG=0x01
+
+### Context ###
+CONTEXT0_3=0x00000101
+CONTEXT4_7=0x00000000
+
+### 2 bytes desired number of bits that is used to get MDK_xxx key ###
+DESIRED_NUM=0x0080
+
+### MDK file ###
+F_AESK0=../../keys/AESK0.bin
+
+### OUT directory ###
+DIR_OUT=../../keys
+
+### print message flag ###
+PRINT_INFO=1
