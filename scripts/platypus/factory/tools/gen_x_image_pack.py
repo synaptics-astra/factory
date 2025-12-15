@@ -265,7 +265,7 @@ def resign_bootloader(input_file, output_file, keys_dir):
             bl_append = 512 - ((bl_size + IMAGE_PREPEND_INFO_SIZE) % 512)
 
         # get preload TA
-        if os.path.getsize(input_file) == bl_size + IMAGE_PREPEND_INFO_SIZE:
+        if os.path.getsize(input_file) == bl_size + IMAGE_PREPEND_INFO_SIZE + bl_append:
             logger.info("No prelaoded TAs in BL")
             hasPreloadTA = False
         else:
@@ -322,12 +322,12 @@ def resign_bootloader(input_file, output_file, keys_dir):
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
             with open(enc_bl) as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
+      
 
-        if hasPreloadTA:
-           with open(bl_w_head, 'rb+') as f:
-               text_len = len(f.read())
-               f.truncate(IMAGE_PREPEND_INFO_SIZE + bl_size + bl_append)
-               f.close()
+        with open(bl_w_head, 'rb+') as f:
+            text_len = len(f.read())
+            f.truncate(IMAGE_PREPEND_INFO_SIZE + bl_size + bl_append)
+            f.close()
 
         # assemble bl subimg
         with open(output_file, 'w') as out:
@@ -598,7 +598,12 @@ def resign_firmware(input_file, output_file, keys_dir, sm_only):
             firmware_file.seek(current_offset)
             found_sm = 0
             while found_sm != 1:
-                firmware_type = struct.unpack('<I', firmware_file.read(4))[0]
+                data = firmware_file.read(4)
+                if len(data) < 4:
+                    print("Warning: reached end of {input_file} before finding firmware")
+                    shutil.copyfile(input_file, output_file)
+                    return None
+                firmware_type = struct.unpack('<I', data)[0]
                 if IMAGE_FIRMWARE_TYPE_SM != hex(firmware_type):
                     current_offset = current_offset + 32 # seek to next firmware
                     firmware_file.seek(current_offset)
