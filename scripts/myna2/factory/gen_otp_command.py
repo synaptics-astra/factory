@@ -14,11 +14,15 @@ MAPPING = {
     "mp_provision_done":         115,
     "scs_area_size_sel":         116,
     "ree_jtag_protection_policy":117,
+    "ree_version":               118,
+    "rkek_id_0":                 119,
+    "rkek_id_1":                 120,
     "emmc_boot_disable":         200,
     "spi_boot_disable":          201,
     "oem_audio_customer_id":     203,
     "production_chip_flag":      204,
     "usb_boot_disable":          205,
+    "boot_version":              206,
     # add more fields here as needed
 }
 
@@ -29,6 +33,10 @@ MASK_TABLE = {
     "ree_jtag_protection_policy":0x00000003,
     "oem_audio_customer_id":     0xFFFFFFFF,
     "production_chip_flag":      0x00000007,
+    "ree_version":               0x000000FF,
+    "rkek_id_0":                 0xFFFFFFFF,
+    "rkek_id_1":                 0xFFFFFFFF,
+    "boot_version":              0x000000FF,
     # add more keys here as needed
 }
 
@@ -45,6 +53,8 @@ ATOMIC_EXTRA_IDXS  = [112, 113]           # REE_SEGID, REE_SECURITY_ENABLE
 ATOMIC_GROUP_IDXS  = set(ATOMIC_HASH_RANGE) | set(ATOMIC_AESK0_RANGE) | set(ATOMIC_EXTRA_IDXS)
 
 MP_PROVISION_DONE_IDX = 115
+REE_VERSION_IDX = 118
+BOOT_VERSION_IDX = 206
 
 HEX_DECIMAL_RE = re.compile(r"^\d+$")
 HEX_PREFIX_RE  = re.compile(r"^0x[0-9a-fA-F]+$")
@@ -115,6 +125,16 @@ def gather_all_records() -> List[Tuple[int, int, int]]:
                         # Special rule: If MP_PROVISION_DONE == 0, skip command
                         if idx == MP_PROVISION_DONE_IDX and value_int == 0:
                             print("[SKIP] OTP_MP_PROVISION_DONE value is 0, command not generated",
+                                  file=sys.stderr)
+                            continue
+                        # Special rule: If REE_VERSION_IDX == 0, skip command
+                        if idx == REE_VERSION_IDX and value_int == 0:
+                            print("[SKIP] OTP_REE_VERSION value is 0, command not generated",
+                                  file=sys.stderr)
+                            continue
+                        # Special rule: If BOOT_VERSION == 0, skip command
+                        if idx == BOOT_VERSION_IDX and value_int == 0:
+                            print("[SKIP] OTP_BOOT_VERSION value is 0, command not generated",
                                   file=sys.stderr)
                             continue
                         records.append((idx, value_int, mask))
