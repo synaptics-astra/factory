@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # coding=UTF-8
 #==============================================================================================
 #
@@ -149,18 +149,18 @@ def patch_usb_bkl(input_file, output_file, keys_dir):
         shutil.copy(keys_dir + '/K1_REE_C_store.bin', K1_ree_c_file)
 
         # reassemble the parts
-        with open(output_file, 'w') as out:
-            with open(p1_file) as inp:
+        with open(output_file, 'wb') as out:
+            with open(p1_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
-            with open(K0_ree_file) as inp:
+            with open(K0_ree_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
-            with open(p2_file) as inp:
+            with open(p2_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
-            with open(K1_ree_a_file) as inp:
+            with open(K1_ree_a_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
-            with open(K1_ree_b_file) as inp:
+            with open(K1_ree_b_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
-            with open(K1_ree_c_file) as inp:
+            with open(K1_ree_c_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
 
     finally:
@@ -199,24 +199,24 @@ def patch_preboot(input_file, output_file, keys_dir):
         shutil.copy(keys_dir + '/K1_REE_D_store.bin', K1_ree_d_file)
 
         # reassemble the parts
-        with open(output_file, 'w') as out:
-            with open(p1_file) as inp:
+        with open(output_file, 'wb') as out:
+            with open(p1_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
-            with open(K0_ree_file) as inp:
+            with open(K0_ree_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
-            with open(p2_file) as inp:
+            with open(p2_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
-            with open(K1_ree_a_file) as inp:
+            with open(K1_ree_a_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
-            with open(K1_ree_b_file) as inp:
+            with open(K1_ree_b_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
-            with open(K1_ree_c_file) as inp:
+            with open(K1_ree_c_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
-            with open(K1_ree_d_file) as inp:
+            with open(K1_ree_d_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
-            with open(scs_data_param_file) as inp:
+            with open(scs_data_param_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
-            with open(p3_file) as inp:
+            with open(p3_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
 
     finally:
@@ -317,10 +317,10 @@ def resign_bootloader(input_file, output_file, keys_dir):
            raise Exception('bl: %s size missmatch', input_file)
 
         # apend preload tas to 512B aligned address
-        with open(bl_w_head, 'w') as out:
-            with open(image_prepend_info_file) as inp:
+        with open(bl_w_head, 'wb') as out:
+            with open(image_prepend_info_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
-            with open(enc_bl) as inp:
+            with open(enc_bl, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
       
 
@@ -330,11 +330,11 @@ def resign_bootloader(input_file, output_file, keys_dir):
             f.close()
 
         # assemble bl subimg
-        with open(output_file, 'w') as out:
-            with open(bl_w_head) as inp:
+        with open(output_file, 'wb') as out:
+            with open(bl_w_head, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
             if hasPreloadTA:
-               with open(preload_ta_file) as inp:
+               with open(preload_ta_file, 'rb') as inp:
                    shutil.copyfileobj(inp, out, BLOCK_SIZE)
 
     finally:
@@ -412,10 +412,10 @@ def resign_fastlogo(input_file, output_file, keys_dir):
            raise Exception('fastlogo: %s size missmatch', input_file)
 
         # assemble fastlogo subimg
-        with open(output_file, 'w') as out:
-            with open(image_prepend_info_file) as inp:
+        with open(output_file, 'wb') as out:
+            with open(image_prepend_info_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
-            with open(enc_fastlogo) as inp:
+            with open(enc_fastlogo, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
 
     finally:
@@ -551,18 +551,18 @@ def resign_tzk(input_file, output_file, keys_dir):
 
     try:
         # reassemble the parts
-        with open(output_file, 'w') as out:
-            with open(image_prepend_info_file) as inp:
+        with open(output_file, 'wb') as out:
+            with open(image_prepend_info_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
-            with open(tzk_container_file) as inp:
+            with open(tzk_container_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
-            with open(enc_atf_file) as inp:
+            with open(enc_atf_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
-            with open(enc_tzk_file) as inp:
+            with open(enc_tzk_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
-            with open(enc_bootp_file) as inp:
+            with open(enc_bootp_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
-            with open(oem_setting_file) as inp:
+            with open(oem_setting_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
 
     finally:
@@ -666,16 +666,16 @@ def resign_firmware(input_file, output_file, keys_dir, sm_only):
 
         # assemble the firmware subimg
         if sm_only is True:
-           with open(output_file, 'w') as out:
-               with open(enc_sm_firmware_file) as inp:
+           with open(output_file, 'wb') as out:
+               with open(enc_sm_firmware_file, 'rb') as inp:
                    shutil.copyfileobj(inp, out, BLOCK_SIZE)
         else:
-           with open(output_file, 'w') as out:
-               with open(firmware_p1) as inp:
+           with open(output_file, 'wb') as out:
+               with open(firmware_p1, 'rb') as inp:
                    shutil.copyfileobj(inp, out, BLOCK_SIZE)
-               with open(enc_sm_firmware_file) as inp:
+               with open(enc_sm_firmware_file, 'rb') as inp:
                    shutil.copyfileobj(inp, out, BLOCK_SIZE)
-               with open(firmware_p2) as inp:
+               with open(firmware_p2, 'rb') as inp:
                    shutil.copyfileobj(inp, out, BLOCK_SIZE)
 
     finally:
@@ -753,10 +753,10 @@ def resign_linux(input_file, output_file, keys_dir):
            raise Exception('Linux: %s size missmatch', input_file)
 
         # assemble Linux subimg
-        with open(output_file, 'w') as out:
-            with open(image_prepend_info_file) as inp:
+        with open(output_file, 'wb') as out:
+            with open(image_prepend_info_file, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
-            with open(enc_linux) as inp:
+            with open(enc_linux, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
 
     finally:

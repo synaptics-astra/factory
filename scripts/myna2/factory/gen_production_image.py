@@ -55,7 +55,7 @@ def check_call(*args, **kwargs):
     normal, err = p.communicate()
 
     if p.returncode != 0:
-        print normal, err
+        print(normal, err)
         raise Exception('Error while executing command %s (return code = %d)' % (' '.join(args[0]), p.returncode))
 
     logger.debug("%s, %s", normal, err)
@@ -115,9 +115,9 @@ def gen_production_subimg(dst_emmc, keys_dir):
                  ]
 
     try:
-	# copy image files to temp folder
-	for image in org_images:
-	      shutil.copy(os.path.join(input_emmc, image), temp_dir)
+        # copy image files to temp folder
+        for image in org_images:
+              shutil.copy(os.path.join(input_emmc, image), temp_dir)
 
         for i in range(len(org_images)):
             if "preboot" in org_images[i]:
@@ -126,17 +126,17 @@ def gen_production_subimg(dst_emmc, keys_dir):
                     patch_preboot(os.path.join(temp_dir, org_images[i][:-3]), os.path.join(dst_emmc, org_images[i][:-3]), keys_dir)
                     preboot_size = os.path.getsize(os.path.join(temp_dir, org_images[i][:-3]))
                     logger.info("preboot size: %s", preboot_size)
-                    if preboot_size in {497196, 759340, 1021484, 1775148}:
+                    if preboot_size in {497196, 521216, 759340, 1021484, 1775148}:
                         pass
                     else:
                         logger.error("preboot size error: %s", preboot_size)
                         sys.exit(1)
                     gzip_file(os.path.join(dst_emmc, org_images[i][:-3]))
                 else:
-	            patch_preboot(os.path.join(temp_dir, org_images[i]), os.path.join(dst_emmc, org_images[i]), keys_dir)
+                    patch_preboot(os.path.join(temp_dir, org_images[i]), os.path.join(dst_emmc, org_images[i]), keys_dir)
                     preboot_size = os.path.getsize(os.path.join(temp_dir, org_images[i]))
                     logger.info("preboot size: %s", preboot_size)
-                    if preboot_size in {497196, 759340, 1021484, 1775148}:
+                    if preboot_size in {497196, 521216, 759340, 1021484, 1775148}:
                         pass
                     else:
                         logger.error("preboot size error: %s", preboot_size)

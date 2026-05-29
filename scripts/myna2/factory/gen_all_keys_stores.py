@@ -42,7 +42,7 @@ def popdir():
 def exec_cmd(args):
     p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     (stdout, stderr) = p.communicate()
-    print stderr.decode()
+    print(stderr.decode())
     assert p.returncode == 0
 
 def main():
@@ -61,29 +61,29 @@ def main():
     args = parser.parse_args()
 
     if args.AESK0_rootk is True:
-       print "Generate AESK0 root key only"
+       print("Generate AESK0 root key only")
        pushdir(gen_keys_path)
        exec_cmd( './gen_AESK0_rootk.sh ' )
        popdir()
 
     elif args.REE_rootk is True:
-       print "Generate K0_ree and K1_ree root keys only"
+       print("Generate K0_ree and K1_ree root keys only")
        pushdir(gen_keys_path)
        exec_cmd( './gen_REE_rootk.sh ' )
        popdir()
 
     elif args.AESK0_kdf is True:
-       print "Derive AESK0 encryption keys"
+       print("Derive AESK0 encryption keys")
        if os.path.isfile(keys_folder + '/AESK0.bin'):
           pushdir(kdf_tool_path)
           exec_cmd( './AESK0_kdf.sh ' )
           popdir()
        else:
-          print "AESK0.bin file not found!"
+          print("AESK0.bin file not found!")
           exit(1)
 
     elif args.REE_keystore is True:
-       print "Generate K0 and K1 keystore"
+       print("Generate K0 and K1 keystore")
        ree_files = ["AESK0_K0_REE.bin", "K0_REE.rsa.priv.pem", "K0_REE.rsa.pub.pem", "K1_REE_A.rsa.priv.pem", "K1_REE_A.rsa.pub.pem", "K1_REE_B.rsa.priv.pem", "K1_REE_B.rsa.pub.pem", "K1_REE_C.rsa.priv.pem", "K1_REE_C.rsa.pub.pem", "K1_REE_D.rsa.priv.pem", "K1_REE_D.rsa.pub.pem"];
        ree_exist = [f for f in ree_files if os.path.isfile( keys_folder + "/" + f )];
        ree_non_exist = list(set(ree_exist) ^ set(ree_files))
@@ -96,7 +96,7 @@ def main():
           exit(1)
 
     elif args.UPDATE_K1_keystore is True:
-       print "Update K1 keystore"
+       print("Update K1 keystore")
        ree_files = ["AESK0_K0_REE.bin", "K0_REE.rsa.priv.pem", "K0_REE.rsa.pub.pem", "K1_REE_A.rsa.priv.pem", "K1_REE_A.rsa.pub.pem", "K1_REE_B.rsa.priv.pem", "K1_REE_B.rsa.pub.pem", "K1_REE_C.rsa.priv.pem", "K1_REE_C.rsa.pub.pem", "K1_REE_D.rsa.priv.pem", "K1_REE_D.rsa.pub.pem"];
        ree_exist = [f for f in ree_files if os.path.isfile( keys_folder + "/" + f )];
        ree_non_exist = list(set(ree_exist) ^ set(ree_files))
@@ -124,7 +124,7 @@ def main():
         exec_cmd( './rsa_store.sh ' )
         popdir()
 
-    print "Output keys are in \"keys\" folder"
+    print("Output keys are in \"keys\" folder")
 
 if __name__ == "__main__":
     main()

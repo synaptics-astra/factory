@@ -1,11 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 import os
-import commands
 import shutil
 import logging
 import sys
-import ConfigParser
+import configparser
 
 logger = logging.getLogger(__name__)
 syna_config_path = 'configs/syna_config.conf'
@@ -19,11 +18,11 @@ class parse_config:
         if not os.path.exists(oem_config_path):
            raise Exception('Cannot find OEM configuration file %s' % oem_config_path)
 
-	oem_config = ConfigParser.ConfigParser()
-	oem_config.read(oem_config_path)
+        oem_config = configparser.ConfigParser()
+        oem_config.read(oem_config_path)
 
         self.oem_segid = oem_config.items("Segmentation ID")
-	self.oem_version = oem_config.items("Version")
+        self.oem_version = oem_config.items("Version")
 
         self.oem_segid_dict = { self.oem_segid[i][0] : self.oem_segid[i][1] for i in range(0, len(self.oem_segid) ) }
         self.oem_ver_dict = { self.oem_version[i][0] : self.oem_version[i][1] for i in range(0, len(self.oem_version) ) }

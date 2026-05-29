@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # coding=UTF-8
 #==============================================================================================
 #
@@ -21,7 +21,7 @@ import sys
 import time
 import datetime
 import os
-import ConfigParser
+import configparser
 import shutil
 import sys
 import logging
@@ -34,7 +34,7 @@ from OTP.gen_otp_pack import *
 workingdir = '/tmp/gen_otp_tmp'
 logger = logging.getLogger(__name__)
 
-config = ConfigParser.ConfigParser()
+config = configparser.ConfigParser()
 config.read('configs/cust_config.conf')
 
 def tool_md5():
@@ -85,10 +85,10 @@ def main():
     timeString = time.strftime("%Y%W", localtime) + '_'
 
     if not os.path.exists(workingdir):
-        os.mkdir(workingdir, 0755)
+        os.mkdir(workingdir, 0o755)
     else:
         shutil.rmtree(workingdir)
-        os.mkdir(workingdir, 0755)
+        os.mkdir(workingdir, 0o755)
 
     lres, otp_pack = get_OTP_layout(workingdir)
     if lres != KMS_SUCCEED:

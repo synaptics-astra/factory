@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # coding=UTF-8
 
 #==============================================================================================
@@ -24,7 +24,7 @@ import logging
 import sys
 import os
 import binascii
-import ConfigParser
+import configparser
 
 from configs.kms_error import *
 
@@ -33,7 +33,7 @@ keys_folder= './keys'
 logger = logging.getLogger(__name__)
 sys.path.append('.')
 
-config_cust = ConfigParser.ConfigParser()
+config_cust = configparser.ConfigParser()
 config_cust.read('configs/cust_config.conf')
 
 def get_config(work_dir):
@@ -41,7 +41,7 @@ def get_config(work_dir):
          logger.error('oem_config.conf not found!! Copy it from PRODUCTION_X')
          sys.exit(1)
 
-    config_oem = ConfigParser.ConfigParser()
+    config_oem = configparser.ConfigParser()
     config_oem.read('configs/oem_config.conf')
     ree_segid = config_oem.get('Segmentation ID', 'REE_SegID')
 

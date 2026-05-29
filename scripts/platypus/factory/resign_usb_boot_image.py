@@ -52,7 +52,7 @@ def check_call(*args, **kwargs):
     normal, err = p.communicate()
 
     if p.returncode != 0:
-        print normal, err
+        print(normal, err)
         raise Exception('Error while executing command %s (return code = %d)' % (' '.join(args[0]), p.returncode))
 
     logger.debug("%s, %s", normal, err)
@@ -109,13 +109,13 @@ def resign_image(dst_image, keys_dir):
                  ]
 
     try:
-	# copy image files to temp folder
-	for image in org_images:
-	      shutil.copy(os.path.join(input_image, image), temp_dir)
+        # copy image files to temp folder
+        for image in org_images:
+              shutil.copy(os.path.join(input_image, image), temp_dir)
 
         for i in range(len(org_images)):
             if "gen3_bkl.bin.usb" in org_images[i]:
-	        patch_usb_bkl(os.path.join(temp_dir, org_images[i]), os.path.join(dst_image, org_images[i]), keys_dir)
+                patch_usb_bkl(os.path.join(temp_dir, org_images[i]), os.path.join(dst_image, org_images[i]), keys_dir)
             elif "gen3_uboot.bin.usb" in org_images[i]:
                 resign_bootloader(os.path.join(temp_dir, org_images[i]), os.path.join(dst_image, org_images[i]), keys_dir)
                 slice_file(os.path.join(dst_image, org_images[i]), os.path.join(dst_image, org_images[i] + ".header"), count=512)
