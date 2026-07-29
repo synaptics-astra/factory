@@ -264,22 +264,6 @@ def resign_bootloader(input_file, output_file, keys_dir):
         if (bl_size + IMAGE_PREPEND_INFO_SIZE) % 512 != 0:
             bl_append = 512 - ((bl_size + IMAGE_PREPEND_INFO_SIZE) % 512)
 
-        # get preload TA
-        if os.path.getsize(input_file) == bl_size + IMAGE_PREPEND_INFO_SIZE + bl_append:
-            logger.info("No prelaoded TAs in BL")
-            hasPreloadTA = False
-        else:
-            logger.info("Process prelaoded TAs")
-            current_offset = IMAGE_PREPEND_INFO_SIZE + bl_size + bl_append
-            bl_file.seek(current_offset)
-            image_magic = struct.unpack('<I', bl_file.read(4))[0]
-            if IMAGE_INFO_MAGIC != hex(image_magic):
-               raise Exception('Preload TA failed in %s', input_file)
-
-            else:
-                slice_file(input_file, preload_ta_file, skip=current_offset)
-                hasPreloadTA = True
-
         # encrypt bl
         config = parse_config()
         config.print_oem_config_segid()
@@ -333,9 +317,6 @@ def resign_bootloader(input_file, output_file, keys_dir):
         with open(output_file, 'wb') as out:
             with open(bl_w_head, 'rb') as inp:
                 shutil.copyfileobj(inp, out, BLOCK_SIZE)
-            if hasPreloadTA:
-               with open(preload_ta_file, 'rb') as inp:
-                   shutil.copyfileobj(inp, out, BLOCK_SIZE)
 
     finally:
         shutil.rmtree(temp_dir)
