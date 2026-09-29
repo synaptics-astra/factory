@@ -110,7 +110,6 @@ def gen_production_subimg(dst_emmc, keys_dir):
                    'fastlogo.subimg.gz',
                    'preboot.subimg.gz',
                    'boot.subimg.gz',
-                   'firmware.subimg.gz',
                    'key.subimg.gz',
                    'tzk.subimg.gz',
                  ]
@@ -156,13 +155,6 @@ def gen_production_subimg(dst_emmc, keys_dir):
                     gzip_file(os.path.join(dst_emmc, org_images[i][:-3]))
                 else:
                     resign_tzk(os.path.join(temp_dir, org_images[i]), os.path.join(dst_emmc, org_images[i]), keys_dir)
-            elif "firmware" in org_images[i]:
-                if ".gz" in org_images[i]:
-                    gunzip_file(os.path.join(temp_dir, org_images[i]))
-                    resign_firmware(os.path.join(temp_dir, org_images[i][:-3]), os.path.join(dst_emmc, org_images[i][:-3]), keys_dir, False)
-                    gzip_file(os.path.join(dst_emmc, org_images[i][:-3]))
-                else:
-                    resign_firmware(os.path.join(temp_dir, org_images[i]), os.path.join(dst_emmc, org_images[i]), keys_dir, False)
             elif "fastlogo" in org_images[i]:
                 if ".gz" in org_images[i]:
                     gunzip_file(os.path.join(temp_dir, org_images[i]))

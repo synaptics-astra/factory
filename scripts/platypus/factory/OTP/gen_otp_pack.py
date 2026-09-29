@@ -78,7 +78,7 @@ def get_OTP_layout(workdir):
               raise Exception('Cannot find K0_REE_HASH')
 
            ## get AESK0 value
-           AESK0hex = open(keys_folder + '/AESK0.bin').read()
+           AESK0hex = open(keys_folder + '/AESK0.bin', 'rb').read()
            AESK0hexbyte = binascii.hexlify(AESK0hex).decode('utf-8')
 
            ## selesct SCS_Total_Area_Size
